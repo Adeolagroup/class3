@@ -1,0 +1,26 @@
+---
+### Play to run against centos servers
+- name: playbook to remove apache httpd on centos
+  hosts: centos
+  become: true
+  gather_facts: false
+
+  tasks:
+  - name: uninstall apache on centos
+    yum:
+      name: httpd
+      state: absent
+
+
+### Play to run against ubuntu servers
+- name: playbook to remove apache httpd on ubuntu
+  hosts: ubuntu
+  become: true
+  gather_facts: false
+
+  tasks:
+  - name: uninstall apache on ubuntu
+    apt:
+      name: apache2
+      state: absent
+
