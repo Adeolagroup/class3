@@ -8,28 +8,29 @@
   become: yes
 
   tasks:
-    - name: Download couchbase rpm package
+    - name: Download couchbase rpm package FOR CENTOS7
       get_url:
         url: https://packages.couchbase.com/releases/6.6.0/couchbase-server-community-6.6.0-centos7.x86_64.rpm
         dest: /tmp
       when: (ansible_distribution == "CentOS" and ansible_distribution_major_version == "7")
 
-    - name: install the couchbase rpm package
+    - name: install the couchbase rpm package for Centos7
       yum:
         name: /tmp/couchbase-server-community-6.6.0-centos7.x86_64.rpm
         state: present
       when: (ansible_distribution == "CentOS" and ansible_distribution_major_version == "7")
 
-    - name: Download couchbase rpm package
+    - name: Download couchbase rpm package for centos8  
       get_url:
         url: https://packages.couchbase.com/releases/6.6.0/couchbase-server-community-6.6.0-centos8.x86_64.rpm
         dest: /tmp
       when: (ansible_distribution == "CentOS" and ansible_distribution_major_version == "8")
 
-    - name: install the couchbase rpm package
+    - name: install the couchbase rpm package for centos8
       yum:
         name: /tmp/couchbase-server-community-6.6.0-centos8.x86_64.rpm
         state: present
+        disable_gpg_check: yes
       when: (ansible_distribution == "CentOS" and ansible_distribution_major_version == "8")
 
     - name: set security limit for couchbase processor on soft

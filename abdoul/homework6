@@ -11,6 +11,14 @@ centos7.class3.com
 centos6.class3.com
 centos7.class3.com
 centos8.class3.com
+centos7.class2.com
+centos8.class2.com
+
+[couchbase]
+centos7.class3.com
+centos8.class3.com
+centos7.class2.com
+centos8.class2.com
 
 [ubuntu18]
 ubuntu18.class3.com
