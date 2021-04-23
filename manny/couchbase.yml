@@ -1,0 +1,42 @@
+---
+### Play to run against centos and redhat servers
+
+- name: Playbook to install couchbase on centos8
+  hosts: local
+  become: true
+  gather_facts: false
+  tasks:
+  - name: Install couchbase on centos8
+    yum:
+      name: /tmp/couchbase-server-community-6.6.0-centos8.x86_64.rpm
+      state: present
+
+- name: Playbook to install couchbase on centos7
+  hosts: centos7
+  become: true
+  gather_facts: false
+  tasks:
+  - name: Install couchbase on centos7
+    yum:
+      name: /tmp/couchbase-server-community-6.6.0-centos7.x86_64.rpm
+      state: present
+
+- name: Playbook to install couchbase on redhat8
+  hosts: redhat8
+  become: true
+  gather_facts: false
+  tasks:
+  - name: Install couchbase on redhat8
+    yum:
+      name: /tmp/couchbase-server-community-6.6.0-centos8.x86_64.rpm
+      state: present
+
+- name: Ensure couchbase is running on each of these servers
+  hosts: local,centos7,redhat8
+  become: true
+  gather_facts: false
+  tasks:
+  - name: couchbase
+    service:
+      state: started
+      enabled: yes
