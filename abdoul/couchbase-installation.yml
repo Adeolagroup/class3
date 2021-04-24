@@ -1,0 +1,70 @@
+####  This Playbook is going to install couchbase community
+###Version 0.2
+---
+#- hosts: couchbase
+
+- name: Playbook to install couchbase on centos servers
+  hosts: "{{ hosts_inventory }}"
+  become: yes
+
+  tasks:
+    - name: Download couchbase rpm package FOR CENTOS7
+      get_url:
+        url: https://packages.couchbase.com/releases/6.6.0/couchbase-server-community-6.6.0-centos7.x86_64.rpm
+        dest: /tmp
+      when: (ansible_distribution == "CentOS" and ansible_distribution_major_version == "7")
+
+    - name: install the couchbase rpm package for Centos7
+      yum:
+        name: /tmp/couchbase-server-community-6.6.0-centos7.x86_64.rpm
+        state: present
+      when: (ansible_distribution == "CentOS" and ansible_distribution_major_version == "7")
+
+    - name: Download couchbase rpm package for centos8  
+      get_url:
+        url: https://packages.couchbase.com/releases/6.6.0/couchbase-server-community-6.6.0-centos8.x86_64.rpm
+        dest: /tmp
+      when: (ansible_distribution == "CentOS" and ansible_distribution_major_version == "8")
+
+    - name: install the couchbase rpm package for centos8
+      yum:
+        name: /tmp/couchbase-server-community-6.6.0-centos8.x86_64.rpm
+        state: present
+        disable_gpg_check: yes
+      when: (ansible_distribution == "CentOS" and ansible_distribution_major_version == "8")
+
+    - name: set security limit for couchbase processor on soft
+      pam_limits:
+        domain: couchbase
+        limit_type: soft
+        limit_item: nproc
+        value: 7500
+        dest: /etc/security/limits.d/10-couchbase.conf
+
+    - name: set security limit for couchbase processor on hard
+      pam_limits:
+        domain: couchbase
+        limit_type: hard
+        limit_item: nproc
+        value: 7500
+        dest: /etc/security/limits.d/10-couchbase.conf
+
+    - name: start and enable couchbase server
+      service:
+        name: couchbase-server
+        state: started
+        enabled: yes
+
+    - name: enable the couchbase port on firewalld
+      firewalld:
+        port: "{{ item }}"
+        permanent: yes
+        state: enabled
+      loop:
+        - 8091/tcp
+        - 21100/tcp
+
+    - name: reload the firewalld service
+      service:
+        name: firewalld
+        state: restarted
