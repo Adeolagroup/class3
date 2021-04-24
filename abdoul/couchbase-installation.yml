@@ -4,7 +4,7 @@
 #- hosts: couchbase
 
 - name: Playbook to install couchbase on centos servers
-  hosts: all
+  hosts: "{{ hosts_inventory }}"
   become: yes
 
   tasks:
