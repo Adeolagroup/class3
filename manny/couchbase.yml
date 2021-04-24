@@ -1,5 +1,6 @@
 ---
 ### Play to run against centos and redhat servers
+### version1.0
 
 - name: Playbook to install couchbase on centos8
   hosts: local
