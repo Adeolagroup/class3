@@ -1,0 +1,75 @@
+---
+  # Homework15 playbook                          
+- name: Serge_ homework15_ ansible_ playbook
+  hosts: centos7.com
+  become: yes
+  tasks: 
+         # task1: Server_Patching
+  - name: update the system
+    yum:
+      name: "*"
+      state: latest
+
+  - name: restart system to reboot to newest kernel
+    shell: "sleep 5 && reboot"
+    async: 1
+    poll: 0
+
+  - name: wait for 10 seconds
+    pause: 
+      seconds: 10
+  - name: wait for the system to reboot
+    wait_for_connection:
+      timeout: 600
+      sleep: 5
+      delay: 50
+     
+          # task2: create file inside directoy
+  
+  - name: Add group finance
+    group:
+          name: finance
+          state: present
+
+  - name: Add user Consultant
+    user:
+          name: weblogic
+          password: 
+          groups: finance
+          state: present
+          shell: /bin/bash
+          home: /opt/oracle/
+     
+  - name: create a directory
+    file:
+       path: /opt/oracle/
+       state: directory
+       mode : 766
+       group: finance
+       owner: weblogic
+  - name: create a file homework14
+    file:
+      path: /opt/oracle/homework14
+      state: touch
+           
+         # task3: create user account
+
+  - name: Add user Consultant
+    user:
+          name: consultant
+          password: redhat8
+          groups: 
+          state: present
+          shell: /bin/bash
+          home: /opt/consultant/       
+
+
+  - name: Add user supervisor
+    user:
+          name: supervisor
+          password: redhat8
+          groups: 
+          state: present
+          shell: /bin/bash
+          home: /opt/supervisor/
+
