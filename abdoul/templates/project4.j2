@@ -1,0 +1,11 @@
+<VirtualHost *:80>	
+	servername           centos7.class.com/secret
+  	documentroot         /var/www/html/secret/
+  	directoryindex       index.html
+</VirtualHost>
+
+<Directory /var/www/html/secret/>
+        Order deny,allow
+        deny from all
+        allow from 192.168.1.81
+</Directory>

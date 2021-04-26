@@ -87,3 +87,8 @@
         - restart apache 
       tags:
         - project2
+
+
+    - name: Include project4 tasks
+      include_tasks: project4.yml
+      tags: project4

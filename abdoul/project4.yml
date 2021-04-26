@@ -1,0 +1,27 @@
+---
+- name: create private directory for project4
+  file:
+    name: /var/www/html/secret
+    state: directory
+    mode: '0755'
+  tags:
+    - project4
+
+- name: copy project4 content over
+  copy:
+    content: "This is our 4th Virtual host web server project4 private web deny or allow for class2 student"
+    dest: /var/www/html/secret/index.html
+    mode: '0644'
+  tags:
+    - project4
+
+- name: copy project4 configuration file
+  template:
+    src: templates/project4.j2
+    dest: /etc/httpd/conf.d/project4.conf
+    mode: '0644'
+    backup: yes
+  notify:
+    - restart apache
+  tags:
+    - project4
