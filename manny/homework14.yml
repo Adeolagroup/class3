@@ -1,0 +1,35 @@
+---
+
+- hosts: centos
+  tasks:
+  - name: Create group finance
+    group:
+      name: finance
+      state: present          
+  - name: Create a user with assigned group
+    user:
+      name: weblogic
+      group: finance
+  - name: Create a directory
+    file:
+      path: /opt/oracle/
+      state: directory
+  - name: Create a file
+    file:
+      path: /opt/oracle/homework14
+      state: touch
+      mode: 0755
+      owner: weblogic
+      group: finance
+  - name: Create user consultant with password
+    user:
+      name: consultant
+      home: /opt/consultant
+      shell: /bin/bash
+      password: d0uSaufhnxIcg
+  - name: Create user supervisor with password
+    user:
+      name: supervisor
+      home: /opt/supervisor
+      shell: /bin/bash
+      password: d0uSaufhnxIcg
