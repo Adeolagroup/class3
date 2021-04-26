@@ -1,0 +1,89 @@
+---
+- name: Playbook to manage apache httpd chapter for class3
+  hosts: "{{ ansible_hosts }}"
+  become: true
+
+  handlers:
+    - name: Restart apache service
+      service:
+        name: httpd
+        enabled: yes
+        state: restarted
+      listen: restart apache
+
+  tasks:
+    - name: install apache on a hosts
+      package:
+        name: httpd
+        state: present
+      tags:
+        - project1
+        - project2
+
+    - name: enabled firewalld ports
+      firewalld:
+        service: "{{ item }}"
+        permanent: yes
+        state: enabled
+      loop:
+        - http
+        - https
+      tags:
+        - project1
+        - project2
+
+    - name: reload firewalld
+      service:
+        name: firewalld
+        state: restarted
+      tags:
+        - project1
+        - project2
+
+    - name: copy class3.conf file for project1
+      template:
+        src: templates/class3.j2
+        dest: /etc/httpd/conf.d/class3.conf
+        mode: '0644'
+      notify:
+        - restart apache 
+      tags:
+        - project1
+
+    - name: copy index content
+      copy:
+        content: "This is ou 1st Default web server Project1 for class3 student"
+        dest: /var/www/html/index.html
+        mode: '0644'
+      notify:
+        - restart apache 
+      tags:
+        - project1
+
+    - name: create virtual folder for project2
+      file:
+        name: /var/www/virtual
+        state: directory
+        mode: '0755'
+      tags:
+        - project2
+
+    - name: copy project2.conf file for project2
+      template:
+        src: templates/project2.j2
+        dest: /etc/httpd/conf.d/project2.conf
+        mode: '0644'
+      notify:
+        - restart apache 
+      tags:
+        - project2
+
+    - name: copy index content
+      copy:
+        content: "This is our 2nd Virtual host web server project2 for class3 student"
+        dest: /var/www/virtual/index.html
+        mode: '0644'
+      notify:
+        - restart apache 
+      tags:
+        - project2
