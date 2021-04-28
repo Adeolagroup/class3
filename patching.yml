@@ -1,5 +1,5 @@
 ---
-- hosts: servers 
+- hosts: "{{ hosts_inventory }}"
   become: true
   tasks:
 
