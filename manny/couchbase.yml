@@ -1,7 +1,7 @@
 ---
 ### Play to run against centos and redhat servers
 - name: Playbook to install couchbase on centos8
-  hosts: "{ hosts_inventory }"
+  hosts: "{{ hosts_inventory }}"
   become: true
   gather_facts: true
   tasks:
@@ -55,7 +55,7 @@
 
   - name: Add couchbase ports to firewall
     firewalld:
-      port: "{ item }"
+      port: "{{ item }}"
       permanent: yes
       state: enabled
     loop:
