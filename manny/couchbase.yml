@@ -1,10 +1,7 @@
 ---
 ### Play to run against centos and redhat servers
-### version1.0
-### abdoul modufy
-## make chabge with atom
 - name: Playbook to install couchbase on centos8
-  hosts: local
+  hosts: "{ hosts_inventory }"
   become: true
   gather_facts: true
   tasks:
@@ -13,33 +10,59 @@
       name: /tmp/couchbase-server-community-6.6.0-centos8.x86_64.rpm
       state: present
       disable_gpg_check: yes
+    when: (ansible_distribution == "CentOS" and ansible_distribution_major_version == "8")
 
-- name: Playbook to install couchbase on centos7
-  hosts: centos7
-  become: true
-  gather_facts: true
-  tasks:
   - name: Install couchbase on centos7
     yum:
       name: /tmp/couchbase-server-community-6.6.0-centos7.x86_64.rpm
       state: present
+    when: (ansible_distribution == "CentOS" and ansible_distribution_major_version == "7")
 
-- name: Playbook to install couchbase on redhat8
-  hosts: redhat8
-  become: true
-  gather_facts: true
-  tasks:
-  - name: Install couchbase on redhat8
+  - name: Install couchbase on redHat8
     yum:
       name: /tmp/couchbase-server-community-6.6.0-centos8.x86_64.rpm
       state: present
+      disable_gpg_check: yes
+    when: (ansible_distribution == "RedHat" and ansible_distribution_major_version == "8")
 
-- name: Ensure couchbase is running on each of these servers
-  hosts: local,centos7,redhat8
-  become: true
-  gather_facts: true
-  tasks:
-  - name: couchbase
+  - name: Install couchbase on redHat7
+    yum:
+      name: /tmp/couchbase-server-community-6.6.0-centos7.x86_64.rpm
+      state: present
+    when: (ansible_distribution == "RedHat" and ansible_distribution_major_version == "7")
+
+  - name: Ensure couchbase is running on each of these servers
     service:
+      name: couchbase-server
       state: started
       enabled: yes
+
+  - name: Set security limits for couchbase processor on soft
+    pam_limits:
+      domain: couchbase
+      limit_type: soft
+      limit_item: nproc
+      value: 7500
+      dest: /etc/security/limits.d/10-couchbase.conf
+
+  - name: set security limit for couchbase processor on hard
+    pam_limits:
+      domain: couchbase
+      limit_type: hard
+      limit_item: nproc
+      value: 7500
+      dest: /etc/security/limits.d/10-couchbase.conf
+
+  - name: Add couchbase ports to firewall
+    firewalld:
+      port: "{ item }"
+      permanent: yes
+      state: enabled
+    loop:
+      - 8091/tcp
+      - 21100/tcp
+
+  - name: Reload firewall service
+    service:
+      name: firewalld
+      state: restarted
