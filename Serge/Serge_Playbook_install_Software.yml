@@ -1,0 +1,45 @@
+---
+   # Playbook to install softwaresuch httpd,git,tcpdump,php
+ - name: install software
+   hosts: all
+   become: yes
+   remote_user: Person
+   tasks:
+     # task1: install httpd
+ - name: Install apache packages 
+    yum:
+      name: httpd
+      state: present
+ - name: ensure httpd is running
+    service:
+      name: httpd 
+      state: started
+      enabled: true
+ - name: Open port 80 for http access
+    firewalld:
+      service: http
+      permanent: true
+      state: enabled
+ - name: Restart the firewalld service to load in the firewall changes
+    service: 
+      name: firewalld 
+      state: restarted
+       #task2: install php
+ - name: Install apache packages
+    yum:
+      name: php
+      state: present
+ - name: ensure php is running
+    service:
+      name: php
+      state: started
+      enabled: true
+ - name: Open port 90000 for php access
+    firewalld:
+      service: php
+      permanent: true
+      state: enabled
+ - name: Restart the firewalld service to load in the firewall changes
+    service:
+      name: firewalld
+      state: restarted
