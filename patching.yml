@@ -1,0 +1,29 @@
+---
+- hosts: servers 
+  become: true
+  tasks:
+
+  - name: update servers
+    yum:
+      name: "*"
+      state: latest 
+      upgrade_cache: yes
+      force_yum: yes   
+   
+
+  - name: restart system 
+    shell: "sleep 15 && reboot"
+    async: 1
+    poll: 0
+
+  - name: wait for 15s
+    pause:
+      seconds: 15
+
+  - name: wait for  reboot
+    wait_for_connection:
+      connect_timeout: 20
+      sleep: 15
+      delay: 5
+      timeout: 60
+
