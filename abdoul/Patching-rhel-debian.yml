@@ -1,0 +1,18 @@
+---
+###Playbooks to patch redaht centos system
+### Develop by Abdoul Alarou
+
+- name: playbook to patch linux hosts
+  hosts: "{{ hosts_inventory }}"
+  become: yes
+  serial: 2
+
+  tasks:
+    - name: Import all patching tasks fo Debian
+      import_tasks: ubuntun_patching.yml
+      when: ansible_facts['os_family'] == 'Debian'
+
+
+    - name: Import all patching tasks fo Debian
+      import_tasks: redhat-centos.yml
+      when: ansible_facts['os_family'] == 'RedHat'
