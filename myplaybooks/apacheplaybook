@@ -1,0 +1,7 @@
+
+---
+- name: playbook to manage apache httpd chapter for class3 project2
+  hosts: all
+  become :true
+
+  tasks

@@ -1,0 +1,33 @@
+---
+- name: create user,  directory and file
+  hosts: centos 
+  become: yes
+
+  tasks:
+  - name: create a finance group
+    group:
+      name: finance
+      state: present
+
+  - name: create a weblogic user
+    user:
+      name: weblogic
+      group: finance
+      state: present
+      
+  - name: create directory
+    file: 
+      path: /opt/oracle
+      state: directory
+      mode: '0755'
+      owner: weblogic
+      group: finance
+
+  - name: touch a file
+    file:
+      path: /opt/oracle/homework14
+      state: touch
+      owner: weblogic
+      group: finance
+      mode: '0755'
+

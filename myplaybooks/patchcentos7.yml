@@ -1,0 +1,30 @@
+--- 
+  - name: patch centos7 & 8    
+    hosts: centos
+    become: true
+  
+
+    tasks:
+    - name: patch centos
+      yum:
+        name: "*"
+        state: latest
+    - name: restart system to reboot to newest kernel
+      shell: "sleep 5 && reboot"
+      async: 1
+      poll: 0
+
+    - name: Wait for the reboot and reconnect 
+      wait_for:
+        port: 22
+        host: centos
+        search_regex: OpenSSH
+        delay: 10
+        timeout: 60
+      connection: local 
+
+    - name: check the Uptime of the servers
+      shell: "uptime"
+      register: Uptime
+
+    - debug: var=Uptime
