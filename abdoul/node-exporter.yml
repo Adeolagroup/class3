@@ -1,2 +1,6 @@
 ---
 hosts: all
+become: yes
+
+tasks:
+  - name: download node exporters
