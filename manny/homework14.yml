@@ -1,11 +1,10 @@
 ---
-
 - hosts: centos
   tasks:
   - name: Create group finance
     group:
       name: finance
-      state: present          
+      state: present
   - name: Create a user with assigned group
     user:
       name: weblogic
