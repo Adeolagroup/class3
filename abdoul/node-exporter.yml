@@ -4,3 +4,6 @@ become: yes
 
 tasks:
   - name: download node exporters
+  - name: text connection
+    ping:
+  - name: create group     
