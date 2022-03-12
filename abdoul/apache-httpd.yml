@@ -1,6 +1,6 @@
 ---
 - name: Playbook to manage apache httpd chapter for class3
-  hosts: "{{ ansible_hosts }}"
+  hosts: centos7
   become: true
 
   handlers:
@@ -46,7 +46,7 @@
         dest: /etc/httpd/conf.d/class3.conf
         mode: '0644'
       notify:
-        - restart apache 
+        - restart apache
       tags:
         - project1
 
@@ -56,7 +56,7 @@
         dest: /var/www/html/index.html
         mode: '0644'
       notify:
-        - restart apache 
+        - restart apache
       tags:
         - project1
 
@@ -74,7 +74,7 @@
         dest: /etc/httpd/conf.d/project2.conf
         mode: '0644'
       notify:
-        - restart apache 
+        - restart apache
       tags:
         - project2
 
@@ -84,7 +84,7 @@
         dest: /var/www/virtual/index.html
         mode: '0644'
       notify:
-        - restart apache 
+        - restart apache
       tags:
         - project2
 
