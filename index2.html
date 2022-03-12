@@ -1,0 +1,50 @@
+---
+- name: Playbook to install telnet packages
+  hosts: centos
+  become: true
+
+  handlers:
+    - name: Restart telnet service
+      service:
+        name: telnet
+        enabled: yes
+        state: restarted
+      listen: restart telnet
+
+  tasks:
+    - name: install telnet on a hosts
+      package:
+        name: telnet
+        state: present
+
+- name: Playbook to install target packages
+  hosts: centos
+  become: true
+
+  handlers:
+    - name: Restart target service
+      service:
+        name: target
+        enabled: yes
+        state: restarted
+      listen: restart target
+
+  tasks:
+    - name: install target on a hosts
+      package:
+        name: target
+        state: present
+
+    - name: enabled firewalld ports
+      firewalld:
+        service: "{{ item }}"
+        permanent: yes
+        state: enabled
+      loop:
+        - telnet
+        - target
+
+    - name: reload firewalld
+      service:
+        name: firewalldS
+        state: restarted
