@@ -4,3 +4,12 @@ become: yes
 
 tasks:
   - name: download node exporters
+  - name: text connection
+    ping:
+  - name: create group
+    group:
+      name: prometheus
+      state present
+ - name: create user
+   user
+     name: prometheus
