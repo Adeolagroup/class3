@@ -1,32 +1,62 @@
-
+#playbook to install packages and start and enable firewalld on group of servers for class3
 ---
-- name: playbook to install telnet and target packages on centos
-  hosts: all
-  remote_user: mahounou
+- name: play to install packages on centos and other group of servers
+  hosts:
+    - centos7
+    - other
+  become: yes
+  remote_user: class3
   gather_facts: true
 
-   tasks:
-   -  name: install telnet
-      yum:
-       name:telnet
-       state:present
+  tasks:
+    - name: install telnet
+      package:
+        name:
+          - targetcli
+          - telnet
+          - httpd
+          - samba-common
+        state: present
 
-   -name: install target packages
-    yum:
-     name: targetcli
-     state: present
-
-    tasks:
     - name: start and anable target
       service:
-       name: target
-       state: started
-       enabled: yes
+        name: target
+        state: started
+        enabled: yes
 
-     -tasks:
-     -  name: start targetcli service on firewalld and make it permanent
-        firewalld:
-        name: iscsi-target
+    - name: start targetcli service on firewalld and make it permanent
+      firewalld:
+        service: iscsi-target
         state: enabled
         permanent: yes
         immediate: yes
+
+
+- name: play to uninstall telnet packages on centos
+  hosts: centos7
+  become: yes
+
+  tasks:
+    - name: uninstall packages on servers
+      package:
+        name:
+          - targetcli
+          - telnet
+          - httpd
+          - samba-common
+        state: absent
+
+    - name: Ensure group "admin" exists with correct gid
+      ansible.builtin.group:
+        name: admin
+        state: present
+        gid: 1040
+
+    - name: Add the user 'johnd' with a specific uid and a primary group of 'admin'
+      ansible.builtin.user:
+        name: johnd
+        comment: John Doe
+        uid: 1040
+        group: admin
+        state: present
+
