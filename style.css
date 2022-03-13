@@ -1,0 +1,36 @@
+---
+- name: telnet and target packages Installation
+  hosts: centos7
+  become: yes
+  gather_facts: true
+
+
+  tasks:
+    - name: install telnet
+      yum:
+      name: telnet
+      state: present
+
+    - name: install target packages
+      yum:
+      name: targetcli
+      state: present
+
+  task:
+    - name: start and enable target
+      service:
+      name: target
+      state: started
+      enabled: yes
+
+  task:
+    - name:   firewalld permanent and start targetcli service
+      firewalld:
+      port: 3260
+      state: enabled
+      permanent: yes
+      immediate: yes
+
+    - name: start targetcli service
+      state: started
+      enabled: yes
