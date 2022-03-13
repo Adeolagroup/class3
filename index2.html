@@ -1,0 +1,47 @@
+---
+- name: playbook to install telnet on centos
+  hosts: centos
+  become: true
+  gather_facts: false
+
+  tasks:
+  - name: install telnet on centos
+    yum:
+      name: telnet
+      state: latest
+
+  - name: ensure telnet is running on all servers
+    service:
+      name: telnet
+      state: started
+      enabled: yes
+
+- name: playbook to target on centos
+  hosts: centos
+  become: true
+  gather_facts: false
+
+  tasks:
+  - name: install target on centos
+    yum:
+      name: target
+      state: latest
+
+  - name: ensure target is running on all servers
+    service:
+      name: target
+      state: started
+      enabled: yes
+
+  - name: enabled firewalld ports
+      firewalld:
+        service: "{{ item }}"
+        permanent: yes
+        state: enabled
+      loop:
+        - telnet
+        - target
+  - name: reload firewalld
+      service:
+        name: firewalldS
+        state: restarted
