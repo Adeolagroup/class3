@@ -1,0 +1,31 @@
+---
+- name: playbook to install telnet and target packages on centos and redhat
+  hosts: all
+  remote_user: wino
+  gather_facts: true
+
+  tasks:
+  - name: install telnet
+    yum:
+      name: telnet
+      state: present
+
+  - name: install target packages
+    yum:
+      name: targetcli
+      state: present
+
+  tasks:
+  - name: start and enable target
+    service:
+      name: target
+      state: started
+      enabled: yes
+
+  tasks:
+  - name: start targetcli service on firewalld and make it permanent
+    firewalld:
+      name: iscsi-target
+      state: enabled
+      permanent: yes
+      immediate: yes
