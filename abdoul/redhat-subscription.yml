@@ -1,0 +1,65 @@
+---
+## This playbook will register our servers to redhat system
+- hosts: rhel
+  become: yes
+  
+  vars_prompt:
+
+    - name: rhn_username
+      prompt: What is your username?
+      private: no
+
+    - name: rhn_password
+      prompt: Enter password for rhn_password
+      unsafe: yes
+      private: yes
+
+  tasks:
+    - name: Subscription Manager Status
+      command: subscription-manager status
+      register: subscription_manager_status
+      ignore_errors: True
+
+    - name: Subscription Manager Register
+      command: "subscription-manager register --force --username={{ rhn_username }} --password={{ rhn_password }}"
+      when: subscription_manager_status.rc == 1
+
+    - name: Subscription Manager Refresh
+      command: subscription-manager refresh 
+
+    - name: Subscription Manager auto-attach
+      command: subscription-manager attach --auto
+
+    - name: Subscription Manager Repos Disable All
+      command: subscription-manager repos --disable=*
+
+    - block:
+      - name: Subscription Manager Repos Enable rhel7
+        command: subscription-manager repos --enable={{ item }}
+        loop:
+          - rhel-7-server-rpms
+          - rhel-7-server-extras-rpms
+          - rhel-7-server-rh-common-rpms
+        when: (ansible_distribution == "RedHat" and ansible_distribution_major_version == "7")
+        
+      - name: Subscription Manager Repos Enable rhel8
+        command: subscription-manager repos --enable={{ item }}
+        loop:
+          - rhel-8-for-x86_64-baseos-rpms
+          - rhel-8-for-x86_64-appstream-rpms
+          - codeready-builder-for-rhel-8-x86_64-rpms
+        when: (ansible_distribution == "RedHat" and ansible_distribution_major_version == "8")
+
+      - name: Subscription Manager Repos Enable rhel8
+        command: subscription-manager repos --enable={{ item }}
+        loop:
+          - rhel-9-for-x86_64-baseos-beta-rpms
+          - rhel-9-for-x86_64-appstream-beta-rpms
+          - codeready-builder-beta-for-rhel-9-x86_64-rpms
+        when: (ansible_distribution == "RedHat" and ansible_distribution_major_version == "9")
+
+
+    - name: Updating the System
+      yum:
+        name: '*'
+        state: latest
