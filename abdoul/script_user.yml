@@ -1,0 +1,29 @@
+---
+#This playbook will run scripst to create user from create_user.sh and delete user with delete_users.sh
+- hosts: redhat
+  become: yes
+
+  tasks:
+    - name: Transfer the script
+      copy: 
+        src: ./files/{{item}}
+        dest: /home/class3
+        mode: 0755
+      with_items:
+        - create_users.sh
+        - users.txt
+        - delete_users.sh
+      tags:
+        - copy_script
+
+    - name: run scripts to create users
+      script: /home/class3/create_users.sh /home/class3/users.txt
+      tags:
+        - create_user
+      ignore_errors: true
+
+    - name: run scripts to delete users
+      ansible.builtin.script:
+        cmd: /home/class3/delete_users.sh users.txt
+      tags:
+        - delete_user
