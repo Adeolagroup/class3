@@ -4,14 +4,19 @@ all:
     rhel:
       hosts:
         rhel7.class3.com:
+          ansible_host: 192.168.1.22
         rhel8.class3.com:
+          ansible_host: 192.168.1.23
         rhel9.class3.com:
+          ansible_host: 192.168.1.24
     centos7:
       hosts:
         centos7.class3.com:
+          ansible_host: 192.168.1.20
     rocky:
       hosts:
         rocky.class3.com:
+          ansible_host: 192.168.1.21
     redhat:
       children:
         centos7:
@@ -20,6 +25,7 @@ all:
     ubuntu:
       hosts:
         ubuntu.class3.com:
+          ansible_host: 192.168.1.25
     other:
       children:
         rocky:
