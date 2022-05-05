@@ -1,0 +1,78 @@
+---
+- hosts: rhel7.class3.com
+  become: yes
+#  vars:
+#    group_name:
+#      Management
+#      Sales
+#      Operation
+#      Finance
+
+
+  tasks:
+    - name: Create required users
+      user:
+        name: "{{ item }}"
+        state: present
+        password: "$6$YeoOeN8mJGTYJbg7$OJgtXB/0hLiKchc7xijtjVVub7EtAUIxY6mNxdCgx3tr.y8F.rwnvWj3YSmXnjV7ygh0jiU/mij3ex9OIZUvH/"
+        update_password: always
+      loop:
+        - jen 
+        - william 
+        - matt 
+        - sam 
+        - anne
+        - danny
+        - kate
+        - bruce
+
+    - name: create required groups
+      group:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - Management
+        - Sales
+        - Operation
+        - Finance 
+
+    - name: Add members to appropriate groups | add jen and william
+      user:
+        name: "{{ item }}"
+        groups: Management,Sales,Operation,Finance
+        append: yes
+      loop:
+        - jen
+        - william
+
+    - name: Add members to appropriate groups | add to Sales group
+      user:
+        name: "{{ item }}"
+        groups: Sales
+      loop:
+        - matt
+        - sam
+        - anne
+        - danny
+
+    - name: Add members to appropriate groups | add to Operation group
+      user:
+        name: "{{ item }}"
+        groups: Operation
+      loop:
+        - kate
+        - bruce
+
+    - name: verify that group membership has been configured correctly for all users
+      shell: getent group "{{ item }}"
+      register: result
+      with_items:
+        - Management
+        - Sales
+        - Operation
+        - Finance
+
+    - name: debug result
+      debug:
+        msg: This is info about "{{ item.stdout_lines|list }}"
+      loop: "{{ result.results }}"
