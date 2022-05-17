@@ -1,0 +1,18 @@
+---
+### play to install apache httpd on ubutu
+- name: playbook to install apache httpd on ubuntu
+  hosts: ubuntu
+  become: true
+  gather_facts: false
+
+  tasks:
+  - name: install apache on ubuntu
+    apt:
+      name: apache2
+      state: latest
+
+  - name: ensure apache is running on all servers
+    service:
+      name: apache2
+      state: started
+      enabled: yes
