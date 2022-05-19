@@ -25,7 +25,7 @@
 
 - name: Rebooting ...
   command: shutdown -r now "Reboot required for updated kernel"
-  async: 0
+  async: 600
   poll: 0
 #  sudo: true
   ignore_errors: true
