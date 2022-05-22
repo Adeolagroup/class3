@@ -1,0 +1,56 @@
+---
+- name: "Install Grafana"
+  yum:
+    name: "{{gfn_dl_link}}"
+  become: "true"
+
+- name: "Create Grafana Configuration file from Template"
+  template:
+    src: "grafana.ini.j2"
+    dest: "/etc/grafana/grafana.ini"
+  become: "true"
+
+- name: "Create Prometheus Datasource for Grafana"
+  template:
+    src: "grafana_prometheus_datasource.yml.j2"
+    dest: "/etc/grafana/provisioning/datasources/grafana_prometheus_datasource.yml"
+  become: "true"
+
+- name: "Create Prometheus Dashboard Source for Grafana"
+  template:
+    src: "grafana_prometheus_dashboard_source.yml.j2"
+    dest: "/etc/grafana/provisioning/dashboards/grafana_prometheus_dashboard_source.yml"
+  become: "true"
+
+- name: "Optionally Download Custom Dashboard"
+  get_url:
+    url: "{{gfn_custom_dashboard}}"
+    dest: "/etc/grafana/provisioning/dashboards/dashboard.json"
+  become: "true"
+  when: "gfn_custom_dashboard != ''"
+
+- name: "Create Node Exporter Dashboard for Grafana"
+  template:
+    src: "dashboard.json.j2"
+    dest: "/etc/grafana/provisioning/dashboards/dashboard.json"
+  become: "true"
+
+- name: "(Re-)Start Grafana"
+  service:
+    name: "grafana-server"
+    enabled: "true"
+    state: "restarted"
+  become: "true"
+
+- name: "Configure CentOS Firewall for Grafana"
+  command: "firewall-cmd --zone=public --add-port={{gfn_port}}/tcp --permanent"
+  become: "true"
+
+- name: "Reload CentOS Firewall"
+  command: "firewall-cmd --reload"
+  become: "true"
+
+- debug:
+    msg: "Grafana Role complete. Access via: http://{{ansible_host}}:{{gfn_port}}"
+...
+

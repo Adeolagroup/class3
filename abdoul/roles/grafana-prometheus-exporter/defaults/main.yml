@@ -1,0 +1,34 @@
+---
+# defaults file for grafana-prometheus-exporter
+# Variable for prometheus
+pmt_arch: "amd64"
+pmt_os: "linux"
+pmt_vers: "2.24.1"
+pmt_dl_link_base: "https://github.com/prometheus/prometheus/releases/download/"
+pmt_dl_link: "{{pmt_dl_link_base}}v{{pmt_vers}}/{{pmt_filename}}"
+pmt_filename: "prometheus-{{pmt_vers}}.{{pmt_os}}-{{pmt_arch}}.tar.gz"
+pmt_dir: "/home/prometheus/prometheus"
+pmt_dl_dest: "{{pmt_dir}}/{{pmt_filename}}"
+pmt_glbl_scrape_interval: "10s"
+pmt_job_scrape_interval: "5s"
+
+
+#Variable for grafana
+gfn_arch: "x86_64"
+gfn_vers: "7.3.7-1"
+gfn_dl_link_base: "https://dl.grafana.com/oss/release/grafana"
+gfn_dl_link: "{{gfn_dl_link_base}}-{{gfn_vers}}.{{gfn_arch}}.rpm"
+gfn_port: "3000"
+gfn_custom_dashboard: ""
+gfn_admin_user: "admin"
+gfn_admin_password: "atix0815!"
+
+
+pmt_port: "9090"
+
+#Variable for node-exporter
+node_exporter_version: "1.1.2"
+node_exporter_bin: /usr/local/bin/node_exporter
+node_exporter_user: node-exporter
+node_exporter_group: "{{ node_exporter_user }}"
+node_exporter_dir_conf: /etc/node_exporter

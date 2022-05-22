@@ -1,0 +1,70 @@
+---
+- name: "Create Prometheus Group"
+  group:
+    name: "prometheus"
+    state: "present"
+  become: "true"
+
+- name: "Create Prometheus User"
+  user:
+    name: "prometheus"
+    group: "prometheus"
+  become: "true"
+
+- name: "Create Prometheus Folder"
+  file:
+    path: "{{pmt_dir}}"
+    state: "directory"
+    owner: "prometheus"
+    group: "prometheus"
+  become: "true"
+
+- name: "Download Prometheus"
+  get_url:
+    url: "{{pmt_dl_link}}"
+    dest: "{{pmt_dl_dest}}"
+  become: "true"
+
+- name: "Extract Prometheus"
+  unarchive:
+    remote_src: "true"
+    src: "{{pmt_dl_dest}}"
+    dest: "{{pmt_dir}}"
+  become: "true"
+
+- name: "Create Prometheus Service File from Template"
+  template:
+    src: "prometheus.service.j2"
+    dest: "/etc/systemd/system/prometheus.service"
+  become: "true"
+
+- name: "Create Prometheus Configuration File from Template"
+  template:
+    src: "prometheus.yml.j2"
+    dest: "{{pmt_dir}}/prometheus-{{pmt_vers}}.{{pmt_os}}-{{pmt_arch}}/prometheus.yml"
+  become: "true"
+
+- name: "Systemd Configuration Reload"
+  systemd:
+    daemon_reload: "yes"
+  become: "true"
+
+- name: "Start & enable Prometheus Service"
+  systemd:
+    name: "prometheus"
+    enabled: "yes"
+    state: "started"
+  become: "true"
+
+- name: "Configure CentOS Firewall for Prometheus"
+  command: "firewall-cmd --zone=public --add-port={{pmt_port}}/tcp --permanent"
+  become: "true"
+
+- name: "Reload CentOS Firewall"
+  command: "firewall-cmd --reload"
+  become: "true"
+
+- debug:
+    msg: "Prometheus Role complete. Access via: http://{{ansible_host}}:{{pmt_port}}"
+...
+
