@@ -1,8 +1,8 @@
 ---
 ## This playbook will register our servers to redhat system
-- hosts: rhel
+- hosts: "{{ hosts_inventory }}"
   become: yes
-  
+
   vars_prompt:
 
     - name: rhn_username
@@ -25,7 +25,7 @@
       when: subscription_manager_status.rc == 1
 
     - name: Subscription Manager Refresh
-      command: subscription-manager refresh 
+      command: subscription-manager refresh
 
     - name: Subscription Manager auto-attach
       command: subscription-manager attach --auto
@@ -41,7 +41,7 @@
           - rhel-7-server-extras-rpms
           - rhel-7-server-rh-common-rpms
         when: (ansible_distribution == "RedHat" and ansible_distribution_major_version == "7")
-        
+
       - name: Subscription Manager Repos Enable rhel8
         command: subscription-manager repos --enable={{ item }}
         loop:
