@@ -1,7 +1,7 @@
 ---
 #Playbooks to run manage_httpd role
 - name: Playbooks to run manage_httpd roles
-  hosts: "{{ ansible_host }}"
+  hosts: "{{ hosts_inventory }}"
   become: yes
 
   roles:
