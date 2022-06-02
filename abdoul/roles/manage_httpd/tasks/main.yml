@@ -1,0 +1,35 @@
+---
+# tasks file for manage_httpd
+- name: install apache on a hosts
+  package:
+    name: httpd
+    state: present
+
+- name: enabled firewalld ports
+  firewalld:
+    service: "{{ item }}"
+    permanent: yes
+    state: enabled
+  loop:
+    - http
+    - https
+
+- name: reload firewalld
+  service:
+    name: firewalld
+    state: restarted
+
+- name: Include project1 tasks
+  include_tasks: project1.yml
+  tags:
+    - project1
+
+- name: Include project2 tasks
+  include_tasks: project2.yml
+  tags:
+    - project2
+
+- name: Include project4 tasks
+  include_tasks: project4.yml
+  tags:
+    - project4

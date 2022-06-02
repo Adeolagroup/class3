@@ -1,0 +1,24 @@
+---
+# tasks file for manage_httpd
+
+- name: create virtual folder for project2
+  file:
+    name: /var/www/virtual
+    state: directory
+    mode: '0755'
+
+- name: copy project2.conf file for project2
+  template:
+    src: project2.j2
+    dest: /etc/httpd/conf.d/project2.conf
+    mode: '0644'
+  notify:
+    - restart apache
+
+- name: copy index content
+  copy:
+    content: "This is our 2nd Virtual host web server project2 for class3 student"
+    dest: /var/www/virtual/index.html
+    mode: '0644'
+  notify:
+    - restart apache
