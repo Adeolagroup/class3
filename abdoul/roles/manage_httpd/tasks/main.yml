@@ -4,6 +4,10 @@
   package:
     name: httpd
     state: present
+  tags:
+    - project1
+    - project2
+    - project4
 
 - name: enabled firewalld ports
   firewalld:
@@ -13,23 +17,31 @@
   loop:
     - http
     - https
+  tags:
+    - project1
+    - project2
+    - project4
 
 - name: reload firewalld
   service:
     name: firewalld
     state: restarted
+  tags:
+    - project1
+    - project2
+    - project4
 
 - name: Include project1 tasks
-  include_tasks: project1.yml
+  include_playbook: project1.yml
   tags:
     - project1
 
 - name: Include project2 tasks
-  include_tasks: project2.yml
+  include_playbook: project2.yml
   tags:
     - project2
 
 - name: Include project4 tasks
-  include_tasks: project4.yml
+  include_playbook: project4.yml
   tags:
     - project4
