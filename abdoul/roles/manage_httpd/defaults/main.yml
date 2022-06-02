@@ -1,2 +1,3 @@
 ---
 # defaults file for manage_httpd
+second_domain: project2.class3.com

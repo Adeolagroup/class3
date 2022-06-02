@@ -2,28 +2,37 @@
 - hosts: "{{ hosts_inventory }}"
   become: true
   tasks:
+    # this task will clean all yum cache on a system
+    - name: clean up the repos
+      shell: yum clean all
+      args:
+        warn: no
 
-  - name: update servers
-    yum:
-      name: "*"
-      state: latest 
-      upgrade_cache: yes
-      force_yum: yes   
-   
+    # this task will will reload all repos
+    - name: repolist the repos
+      shell: yum repolist all
+      args:
+        warn: False
+    
+    - name: upgrade all packages
+      yum:
+        name: '*'
+        state: latest
 
-  - name: restart system 
-    shell: "sleep 15 && reboot"
-    async: 1
-    poll: 0
+    - name: Check for reboot hint.
+      shell: LAST_KERNEL=$(rpm -q --last kernel | awk 'NR==1{sub(/kernel-/,""); print $1}'); CURRENT_KERNEL=$(uname -r); if [ $LAST_KERNEL != $CURRENT_KERNEL ]; then echo 'reboot'; else echo 'no'; fi
+      ignore_errors: true
+      register: reboot_hint
 
-  - name: wait for 15s
-    pause:
-      seconds: 15
+    - name: Rebooting ...
+      command: shutdown -r now "Reboot required for updated kernel"
+      async: 600
+      poll: 0
+    #  sudo: true
+      ignore_errors: true
+      when: reboot_hint.stdout.find("reboot") != -1
+      register: _rebooting_done
 
-  - name: wait for  reboot
-    wait_for_connection:
-      connect_timeout: 20
-      sleep: 15
-      delay: 5
-      timeout: 60
-
+    - name: Wait for thing to reboot...
+      pause: seconds=45
+      when: "_rebooting_done is changed"

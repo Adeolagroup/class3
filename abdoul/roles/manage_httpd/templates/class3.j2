@@ -1,5 +1,5 @@
 <Virtualhost *:80>
-        ServerName centos7.class3.com
+        ServerName "{{ ansible_fqdn }}"
         DocumentRoot /var/www/html
         DirectoryIndex index.html
 </Virtualhost>
