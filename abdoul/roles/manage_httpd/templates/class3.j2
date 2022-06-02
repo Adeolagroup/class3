@@ -1,5 +1,5 @@
 <Virtualhost *:80>
-        ServerName "{{ ansible_fqdn }}"
+        ServerName {{ ansible_fqdn }}
         DocumentRoot /var/www/html
         DirectoryIndex index.html
 </Virtualhost>

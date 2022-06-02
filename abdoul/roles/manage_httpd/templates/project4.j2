@@ -1,5 +1,5 @@
 <VirtualHost *:80>
-	servername           "{{ ansible_fqdn }}"/secret
+	servername           {{ ansible_fqdn }}/secret
   	documentroot         /var/www/html/secret/
   	directoryindex       index.html
 </VirtualHost>
