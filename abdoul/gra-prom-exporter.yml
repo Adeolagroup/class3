@@ -2,6 +2,8 @@
 #Playbooks to run grafana-prometheus-exporter role
 - name: Install and configure prometheus, grafana and node-expoerter
   hosts: "{{ hosts_inventory }}"
+  become: true
+  
   pre_tasks:
     - name: Ensure Centos 7
       assert:
