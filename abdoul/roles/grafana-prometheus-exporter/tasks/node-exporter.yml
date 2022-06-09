@@ -2,6 +2,7 @@
   stat:
     path: "{{ node_exporter_bin }}"
   register: __check_node_exporter_present
+
 - name: create node exporter user
   user:
     name: "{{ node_exporter_user }}"
@@ -9,24 +10,27 @@
     shell: /usr/sbin/nologin
     system: true
     create_home: false
+
 - name: create node exporter config dir
   file:
     path: "{{ node_exporter_dir_conf }}"
     state: directory
     owner: "{{ node_exporter_user }}"
     group: "{{ node_exporter_group }}"
+
 - name: if node exporter exist get version
   shell: "cat /etc/systemd/system/node_exporter.service | grep Version | sed s/'.*Version '//g"
   when: __check_node_exporter_present.stat.exists == true
   changed_when: false
   register: __get_node_exporter_version
-  
+
 - name: download and unzip node exporter if not exist
   unarchive:
     src: "https://github.com/prometheus/node_exporter/releases/download/v{{ node_exporter_version }}/node_exporter-{{ node_exporter_version }}.linux-amd64.tar.gz"
     dest: /tmp/
     remote_src: yes
     validate_certs: no
+
 - name: move the binary to the final destination
   copy:
     src: "/tmp/node_exporter-{{ node_exporter_version }}.linux-amd64/node_exporter"
@@ -35,11 +39,13 @@
     group: "{{ node_exporter_group }}"
     mode: 0755
     remote_src: yes
+
   when: __check_node_exporter_present.stat.exists == false or not __get_node_exporter_version.stdout == node_exporter_version
 - name: clean
   file:
     path: /tmp/node_exporter-{{ node_exporter_version }}.linux-amd64/
     state: absent
+
 - name: install service
   template:
     src: node_exporter.service.j2
@@ -48,7 +54,17 @@
     group: root
     mode: 0755
   notify: reload_daemon_and_restart_node_exporter
+
 - meta: flush_handlers
+
+- name: "Configure CentOS Firewall for node_exporter"
+  command: "firewall-cmd --zone=public --add-port={{exporter_port}}/tcp --permanent"
+  become: "true"
+
+- name: "Reload CentOS Firewall"
+  command: "firewall-cmd --reload"
+  become: "true"
+
 - name: service always started
   systemd:
     name: node_exporter

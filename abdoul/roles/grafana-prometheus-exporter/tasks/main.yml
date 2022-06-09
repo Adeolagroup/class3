@@ -1,2 +1,17 @@
 ---
 # tasks file for grafana-prometheus-exporter
+
+- name: Include prometheus file for deployment
+  import_tasks: prometheus.yml
+  tags:
+    - prometheus
+
+- name: Include node-exporter file for deployment
+  import_tasks: node-exporter.yml
+  tags:
+    - exporter
+
+- name: Include grafana file for deployment
+  import_tasks: grafana.yml
+  tags:
+    - grafana
