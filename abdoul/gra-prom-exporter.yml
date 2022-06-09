@@ -12,6 +12,4 @@
         msg: "Unfortunately for now only CentOS-7 is supported."
 
   roles:
-    - role: prometheus
-      tags:
-        - prometheus
+    - role: grafana-prometheus-exporter
