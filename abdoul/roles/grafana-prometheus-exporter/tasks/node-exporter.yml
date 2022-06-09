@@ -10,7 +10,6 @@
     shell: /usr/sbin/nologin
     system: true
     create_home: false
-    become: yes
 
 - name: create node exporter config dir
   file:
