@@ -1,2 +1,14 @@
 global:
   scrape_interval: {{pmt_glbl_scrape_interval}}
+
+scrap_configs:
+  - job_name: 'prometheus'
+
+    static_configs:
+    - targets: ['{{ ansible_default_ipv4.address }}:{{pmt_port}}']
+
+  - job_name: 'class3_demo'
+    static_configs:
+      targets: ['{{ ansible_default_ipv4.address }}:{{exporter_port}}']
+      labels:
+        instance: {{ ansible_fqdn }}
