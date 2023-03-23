@@ -15,4 +15,7 @@
 
     - name: Import all patching tasks fo Debian
       import_tasks: redhat-centos.yml
-      when: ansible_facts['os_family'] == 'RedHat'
+      when: 
+        - ansible_facts['os_family'] == 'RedHat'
+        - ansible_facts['os_family'] == 'Rocky'
+        - ansible_facts['os_family'] == 'AlmaLinux'
