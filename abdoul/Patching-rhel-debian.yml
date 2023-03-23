@@ -5,7 +5,6 @@
 - name: playbook to patch linux hosts
   hosts: "{{ hosts_inventory }}"
   become: yes
-#  serial: 2
 
   tasks:
     - name: Import all patching tasks fo Debian
