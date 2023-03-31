@@ -14,7 +14,7 @@
     warn: False
 
 - name: upgrade all packages
-  dnf:
+  yum:
     name: '*'
     state: latest
 
