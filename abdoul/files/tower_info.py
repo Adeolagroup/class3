@@ -21,7 +21,7 @@ while Fetch_Info == False:
             org_output['name']=org['name']
             categories_and_urls = [(link, org['related'][link]) for link in org['related'] if link in ['inventories', 'job_templates', 'projects', 'credentials','teams','admins','users']]
             for category, url in categories_and_urls:
-                related = requests.get(url='https://tower-us.cdk.com'+url,auth=("alaroua","CDK1122!@!@"),headers=headers).json()['results']
+                related = requests.get(url='https://192.168.1.103'+url,auth=("admin","password"),headers=headers).json()['results']
                 org_output[category]=[]
                 for item in related:
                     org_output[category].append(item['name' if category not in ['users', 'admins'] else 'username'])
